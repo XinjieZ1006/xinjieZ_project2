@@ -22,7 +22,7 @@ const login = (req, res) => {
       return res.status(401).json({ error: 'Wrong username or password!' });
     }
     req.session.account = Account.toAPI(account);
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: `/profile/${username}` });
   });
 };
 
@@ -49,7 +49,7 @@ const signup = async (req, res) => {
     const newAcc = new Account({ username, nickname, password: hash });
     await newAcc.save();
     req.session.account = Account.toAPI(newAcc);
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/profile' + `/${username}` });
   } catch (e) {
     console.log(e);
     if (e.code === 11000) {
@@ -66,6 +66,41 @@ const getName = async (req, res) => {
     return res.json({ nickname: account.nickname });
   } catch (e) {
     return res.status(400).json({ error: 'Error retrieving nickname' });
+  }
+};
+
+const getUser = async (req, res) => {
+  try {
+    const username = req.params.username;
+    const account = await Account.findOne({ username });
+
+    if(!account) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    return res.status(200).json({ account });
+  }catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: 'Error retrieving user' });
+  }
+    
+}
+
+
+const getCurrentUser = async (req, res) => {
+  if (!req.session.account) {
+    return res.status(401).json({ error: 'You need to log in first.' });
+  }
+
+  try {
+    const account = await Account.findById(req.session.account._id);
+    console.log('Account:', account);
+    return res.json({
+      nickname: account.nickname,
+      username: account.username,
+      isPremium: account.isPremium,
+    });
+  } catch (e) {
+    return res.status(400).json({ error: 'Error retrieving user' });
   }
 };
 
@@ -92,4 +127,6 @@ module.exports = {
   signup,
   getName,
   updateNickname,
+  getCurrentUser,
+  getUser,
 };

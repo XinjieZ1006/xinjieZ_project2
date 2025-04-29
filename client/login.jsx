@@ -12,7 +12,7 @@ const handleLogin = (e) => {
     const pass = e.target.querySelector('#pass').value;
 
     if (!username || !pass) {
-        helper.handleError('Username or password is empty!');
+        formik.setErrors({ username: 'Required', pass: 'Required' });
         return false;
     }
 
@@ -30,12 +30,12 @@ const handleSignup = (e) => {
     const pass2 = e.target.querySelector('#pass2').value;
 
     if (!username || !pass || !pass2) {
-        helper.handleError('All fields are required!');
+        formik.setErrors({ username: 'Required', pass: 'Required', pass2: 'Required' });
         return false;
     }
 
     if (pass != pass2) {
-        helper.handleError('Passwords do not match!');
+        formik.setErrors({ pass2: 'Passwords do not match!' });
         return false;
     }
 
@@ -43,45 +43,8 @@ const handleSignup = (e) => {
     return false;
 }
 
-const LoginWindow = (props) => {
-    return (
-        <form id="loginForm"
-            name='loginForm'
-            onSubmit={handleLogin}
-            action="/login"
-            method='POST'
-            className='mainForm'>
-            <label htmlFor='username'>Username: </label>
-            <input id='user' type='text' name='username' placeholder='username' />
-            <label htmlFor='pass'>Password:</label>
-            <input id='pass' type='password' name='pass' placeholder='password' />
-            <input className='formSubmit' type='submit' value='Sign In' />
-        </form>
-    )
-}
 
-const SignupWindow = (props) => {
-    return (
-        <form id="signupForm"
-            name='signupForm'
-            onSubmit={handleSignup}
-            action="/signup"
-            method='POST'
-            className='mainForm'>
-            <label htmlFor='username'>Username: </label>
-            <input id='user' type='text' name='username' placeholder='username' />
-            <label htmlFor='nickname'>Nickname: </label>
-            <input id='nickname' type='text' name='nickname' placeholder='optional' />
-            <label htmlFor='pass'>Password:</label>
-            <input id='pass' type='password' name='pass' placeholder='password' />
-            <label htmlFor='pass2'>Password:</label>
-            <input id='pass2' type='password' name='pass2' placeholder='retype password?' />
-            <input className='formSubmit' type='submit' value='Sign Up' />
-        </form>
-    )
-}
-
-const validate = (values) => {
+const validateSignup = (values) => {
     const errors = {};
 
     if (!values.username) {
@@ -108,6 +71,51 @@ const validate = (values) => {
     return errors;
 }
 
+const validateLogin = (values) => {
+    const errors = {};
+
+    if (!values.username) {
+        errors.username = 'Required';
+    }
+
+    if (!values.pass) {
+        errors.pass = 'Required';
+    }
+}
+
+const LoginForm = (props) => {
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            pass: ''
+        },
+        validateLogin,
+        onSubmit: (values) => {
+            helper.sendPost("/login", values);
+        },
+    });
+
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <div className='field'>
+            <label htmlFor='username' className='label'>Username: </label>
+            <input id='username' className='input' type='text' name='username' placeholder='username' onChange={formik.handleChange} value={formik.values.username} />
+            {formik.errors.username ? <div className='inputError help is-danger'>{formik.errors.username}</div> : null}
+            </div>
+
+            <div className='field'>
+            <label htmlFor='pass' className='label'>Password:</label>
+            <input id='pass' className='input' type='password' name='pass' placeholder='password' onChange={formik.handleChange} value={formik.values.pass} />
+            {formik.errors.pass ? <div className='inputError help is-danger'>{formik.errors.pass}</div> : null}
+            </div>
+
+            <div className='field'>
+            <button className='formSubmit button is-primary' type='submit'>Submit</button>
+            </div>
+        </form>
+    )
+}
+
 const SignUpForm = (props) => {
     const formik = useFormik({
         initialValues: {
@@ -116,7 +124,7 @@ const SignUpForm = (props) => {
             pass: '',
             pass2: ''
         },
-        validate,
+        validateSignup,
         onSubmit: (values) => {
             helper.sendPost("/signup", values);
         },
@@ -124,18 +132,32 @@ const SignUpForm = (props) => {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <label htmlFor='username'>Username: </label>
-            <input id='username' type='text' name='username' placeholder='username' onChange={formik.handleChange} value={formik.values.username} />
-            {formik.errors.username ? <div>{formik.errors.username}</div> : null}
-            <label htmlFor='nickname'>Nickname: </label>
-            <input id='nickname' type='text' name='nickname' placeholder='optional' onChange={formik.handleChange} value={formik.values.nickname} />
-            <label htmlFor='pass'>Password:</label>
-            <input id='pass' type='password' name='pass' placeholder='password' onChange={formik.handleChange} value={formik.values.pass} />
-            {formik.errors.pass ? <div>{formik.errors.pass}</div> : null}
-            <label htmlFor='pass2'>Password:</label>
-            <input id='pass2' type='password' name='pass2' placeholder='retype password?' onChange={formik.handleChange} value={formik.values.pass2} />
-            {formik.errors.pass2 ? <div>{formik.errors.pass2}</div> : null}
-            <button className='formSubmit' type='submit' >Submit</button>
+            <div className='field'>
+            <label htmlFor='username' className='label'>Username: </label>
+            <input id='username' className='input' type='text' name='username' placeholder='username' onChange={formik.handleChange} value={formik.values.username} />
+            {formik.errors.username ? <div className='inputError help is-danger'>{formik.errors.username}</div> : null}
+            </div>
+
+            <div className='field'>
+            <label htmlFor='nickname' className='label'>Nickname: </label>
+            <input id='nickname' className='input' type='text' name='nickname' placeholder='optional' onChange={formik.handleChange} value={formik.values.nickname} />
+            </div>
+
+            <div className='field'>
+            <label htmlFor='pass' className='label'>Password:</label>
+            <input id='pass' className='input' type='password' name='pass' placeholder='password' onChange={formik.handleChange} value={formik.values.pass} />
+            {formik.errors.pass ? <div className='inputError help is-danger'>{formik.errors.pass}</div> : null}
+            </div>
+
+            <div className='field'>
+            <label htmlFor='pass2' className='label'>Password:</label>
+            <input id='pass2' className='input' type='password' name='pass2' placeholder='retype password?' onChange={formik.handleChange} value={formik.values.pass2} />
+            {formik.errors.pass2 ? <div className='inputError help is-danger'>{formik.errors.pass2}</div> : null}
+            </div>
+
+            <div className='field'>
+            <button className='formSubmit button is-primary' type='submit' >Submit</button>
+            </div>
         </form>
     )
 }
@@ -148,7 +170,7 @@ const init = () => {
 
     loginButton.addEventListener('click', (e) => {
         e.preventDefault();
-        root.render(<LoginWindow />);
+        root.render(<LoginForm />);
         return false;
     })
     signupButton.addEventListener('click', (e) => {
@@ -157,7 +179,7 @@ const init = () => {
         return false;
     })
 
-    root.render(<LoginWindow />);
+    root.render(<LoginForm />);
 }
 
 window.onload = init;

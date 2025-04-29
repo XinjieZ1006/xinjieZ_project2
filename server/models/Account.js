@@ -43,6 +43,10 @@ const AccountSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  avatar: {
+    type: String,
+    default: '../assets/img/lemon.png',
+  }
 });
 
 // Converts a doc to something we can store in redis later on.

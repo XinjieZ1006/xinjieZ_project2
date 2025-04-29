@@ -1,41 +1,48 @@
 const handleError = (message) => {
-    document.getElementById('errorMessage').textContent = message;
-    document.getElementById('domoMessage').classList.remove('hidden');
+  document.querySelector('#error').classList.add('is-active');
+  document.querySelector('#errorMessage').innerHTML = message;
 };
 
 /* Sends post requests to the server using fetch. Will look for various
    entries in the response JSON object, and will handle them appropriately.
 */
 const sendPost = async (url, data, handler) => {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  
-    const result = await response.json();
-  
-    if(result.redirect) {
-      window.location = result.redirect;
-    }
-  
-    if(result.error) {
-      handleError(result.error);
-    }
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 
-    if(handler){
-        handler(result);
-    }
-  };
+  const result = await response.json();
 
-  const hideError = () => {
-    document.getElementById('domoMessage').classList.add('hidden');
-  };
-
-  module.exports = {
-    handleError,
-    sendPost,
-    hideError,
+  if (result.redirect) {
+    window.location = result.redirect;
   }
+
+  if (result.error) {
+    handleError(result.error);
+  }
+
+  if (handler) {
+    handler(result);
+  }
+};
+
+const hideError = () => {
+  document.querySelector('#error').classList.remove('is-active');
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  const components = document.querySelectorAll('.delete, .modal-background');
+  for (let i = 0; i < components.length; i++) {
+    components[i].addEventListener('click', hideError);
+  }
+})
+
+module.exports = {
+  handleError,
+  sendPost,
+  hideError,
+}

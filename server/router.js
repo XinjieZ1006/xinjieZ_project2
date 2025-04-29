@@ -18,7 +18,11 @@ const router = (app) => {
   app.get('/changeName', mid.requiresLogin, controllers.Account.accountInfo);
   app.post('/updateName', mid.requiresLogin, controllers.Account.updateNickname);
 
-  app.get('/profile/:username', controllers.Account.profilePage);
+  app.get('/profile/:username', controllers.Profile.profilePage);
+  app.get('/getUser/:username', mid.requiresLogin, controllers.Account.getUser);
+  app.get('/getCurrentUser', mid.requiresLogin, controllers.Account.getCurrentUser);
+  app.get('/getQuestions', mid.requiresLogin, controllers.Profile.getAnsweredQuestions);
+  app.post('/sendQuestion', mid.requiresLogin, controllers.Profile.askQuestion);
 };
 
 module.exports = router;

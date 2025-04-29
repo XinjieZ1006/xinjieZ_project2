@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
-  <title>{{username}}'s Profile</title>
-  <link rel="stylesheet" href="/assets/style.css">
+    <meta charset="utf-8" />
+    <title>{{username}}'s Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 </head>
+
 <body>
-  <nav><a href="/logout">Logout</a></nav>
+    <nav><a href="/logout">Logout</a></nav>
+    <div id="app">
+    </div>
+    <script src="/assets/profileBundle.js"></script>
 
-  <section id="profileContent">
-    <h1>{{username}}'s Profile</h1>
-    <p>Nickname: {{nickname}}</p>
-    <img src="{{profilePicture}}" alt="Profile Picture" id="profilePicture"/>
-    
-    <button id="editProfileButton">Edit Profile</button>
-    
-  </section>
-
-  <script src="/assets/bundle.js"></script>
+    <div class="modal" id="error">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Error</p>
+                    <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <h3><span id="errorMessage"></span></h3>
+                </section>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"></button>
+    </div>
 </body>
+
 </html>
