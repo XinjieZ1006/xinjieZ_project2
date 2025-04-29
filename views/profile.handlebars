@@ -4,11 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <title>{{username}}'s Profile</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="stylesheet" href="../assets/my-bulma-project.css">
 </head>
 
 <body>
-    <nav><a href="/logout">Logout</a></nav>
+    <nav class="navbar has-background-primary mb-5 p-2 is-rounded">
+        <div class="navlink navbar-item"><a class="button is-outlined has-text-weight-bold" href="/logout">Logout</a></div>
+        <div class="navlink navbar-item"><a class="button is-outlined has-text-weight-bold" href="/">Home</a></div>
+    </nav>
     <div id="app">
     </div>
     <script src="/assets/profileBundle.js"></script>

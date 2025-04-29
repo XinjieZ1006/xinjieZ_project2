@@ -21,8 +21,9 @@ const router = (app) => {
   app.get('/profile/:username', controllers.Profile.profilePage);
   app.get('/getUser/:username', mid.requiresLogin, controllers.Account.getUser);
   app.get('/getCurrentUser', mid.requiresLogin, controllers.Account.getCurrentUser);
-  app.get('/getQuestions', mid.requiresLogin, controllers.Profile.getAnsweredQuestions);
+  app.get('/getQuestions/:username', mid.requiresLogin, controllers.Profile.getAnsweredQuestions);
   app.post('/sendQuestion', mid.requiresLogin, controllers.Profile.askQuestion);
+  app.get('/getSessionUser', mid.requiresLogin, controllers.Account.getSessionUser);
 };
 
 module.exports = router;

@@ -10,7 +10,9 @@
     "start": "node ./server/app.js",
     "pretest": "eslint ./server --fix",
     "test": "echo \"Tests complete\"",
-    "heroku-postbuild": "webpack"
+    "heroku-postbuild": "webpack",
+    "build-bulma": "sass --load-path=node_modules my-bulma-project.scss hosted/my-bulma-project.css",
+    "bulma": "npm run build-bulma -- --watch"
   },
   "keywords": [
     "Node",
@@ -47,6 +49,7 @@
     "helmet": "^7.1.0",
     "mongoose": "^8.2.3",
     "redis": "^4.6.13",
+    "sass": "^1.87.0",
     "serve-favicon": "^2.5.0",
     "underscore": "^1.13.6"
   }

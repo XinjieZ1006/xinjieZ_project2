@@ -1,0 +1,16 @@
+$coralpink: #FF6F61;
+$darkblue: #003366;
+$lighcoral: #Fd9cA2;
+$beige: #F5F5DC;
+
+@use "bulma/sass" with (
+  $family-primary: '"Nunito", sans-serif',
+  $primary: $coralpink,
+  $link: $lighcoral,
+  $text: $darkblue,
+  $info: $beige,
+  $box-shadow: 4px 2px 8px 2px rgba(87, 47, 47, 0.404),
+);
+
+// Import the Google Font
+@import url("https://fonts.googleapis.com/css?family=Nunito:400,700");

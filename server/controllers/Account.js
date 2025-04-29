@@ -74,15 +74,29 @@ const getUser = async (req, res) => {
     const username = req.params.username;
     const account = await Account.findOne({ username });
 
-    if(!account) {
+    if (!account) {
       return res.status(404).json({ error: 'User not found' });
     }
     return res.status(200).json({ account });
-  }catch (e) {
+  } catch (e) {
     console.log(e);
     return res.status(500).json({ error: 'Error retrieving user' });
   }
-    
+
+}
+
+const getSessionUser = async (req, res) => {
+  if (!req.session.account) {
+    return res.status(401).json({ error: 'You need to log in first.' });
+  }
+
+  try {
+    const account = await Account.findById(req.session.account._id);
+    return res.json({account: account});
+  }
+  catch (e) {
+    return res.status(400).json({ error: 'Error retrieving user' });
+  }
 }
 
 
@@ -128,5 +142,6 @@ module.exports = {
   getName,
   updateNickname,
   getCurrentUser,
+  getSessionUser,
   getUser,
 };

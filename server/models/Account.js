@@ -46,7 +46,13 @@ const AccountSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: '../assets/img/lemon.png',
-  }
+  },
+  questions: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Question',
+    },
+  ]
 });
 
 // Converts a doc to something we can store in redis later on.

@@ -17,10 +17,17 @@ const profilePage = async (req, res) => {
 
 const getAnsweredQuestions = async (req, res) => {
     try {
-        const query = { owner: req.session.account._id };
-        const docs = await Question.find(query).select('title body createdDate answer').lean().exec();
-        const answeredQuestions = docs.filter((question) => question.isAnswered === true);
-        return res.json({ answeredQuestions: docs });
+        const { username } = req.params;
+        console.log('Getting answered questions for user:', username);
+        // check if the user exists 
+        const account = await models.Account.findOne({ username }).populate('questions').lean();
+        if (!account) {
+            return res.status(404).render('notFound', { error: 'User not found!' });
+        }
+        //const query = { owner: req.session.account._id };
+        //const docs = await Question.find(query).select('title body createdDate answer').lean().exec();
+        const answeredQuestions = account.questions;
+        return res.json({ answeredQuestions: answeredQuestions });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ error: 'Error retrieving questions!' });
@@ -48,6 +55,10 @@ const askQuestion = async (req, res) => {
 
         const newQuestion = new Question(questionData);
         await newQuestion.save();
+
+        owner.questions.push(newQuestion._id);
+        await owner.save();
+
         return res.status(201).json({ question: newQuestion });
     } catch (e) {
         console.log(e);
