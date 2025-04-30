@@ -56,7 +56,7 @@ const AccountSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'Question',
     },
-  ]
+  ],
 });
 
 // Converts a doc to something we can store in redis later on.

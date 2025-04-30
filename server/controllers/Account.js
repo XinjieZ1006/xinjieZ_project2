@@ -1,7 +1,7 @@
+const bcrypt = require('bcrypt');
 const models = require('../models');
 
 const { Account } = models;
-const bcrypt = require('bcrypt');
 
 const loginPage = (req, res) => res.render('login');
 const accountInfo = (req, res) => res.render('account');
@@ -50,7 +50,7 @@ const signup = async (req, res) => {
     const newAcc = new Account({ username, nickname, password: hash });
     await newAcc.save();
     req.session.account = Account.toAPI(newAcc);
-    return res.json({ redirect: '/profile' + `/${username}` });
+    return res.json({ redirect: `/profile/${username}` });
   } catch (e) {
     console.log(e);
     if (e.code === 11000) {
@@ -72,7 +72,7 @@ const getName = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const username = req.params.username;
+    const { username } = req.params;
     const account = await Account.findOne({ username }).select('-password');
 
     if (!account) {
@@ -83,8 +83,7 @@ const getUser = async (req, res) => {
     console.log(e);
     return res.status(500).json({ error: 'Error retrieving user' });
   }
-
-}
+};
 
 const getSessionUser = async (req, res) => {
   if (!req.session.account) {
@@ -93,13 +92,11 @@ const getSessionUser = async (req, res) => {
 
   try {
     const account = await Account.findById(req.session.account._id).select('-password');
-    return res.json({account: account});
-  }
-  catch (e) {
+    return res.json({ account });
+  } catch (e) {
     return res.status(400).json({ error: 'Error retrieving user' });
   }
-}
-
+};
 
 const getCurrentUser = async (req, res) => {
   if (!req.session.account) {
@@ -119,20 +116,19 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
-
 const updateNickname = async (req, res) => {
   const nickname = req.body.newName;
   const account = await Account.findById(req.session.account._id);
   if (!nickname) {
     return res.status(400).json({ error: 'Enter a new nickname' });
   }
-  if(!account.isPremium){
+  if (!account.isPremium) {
     return res.status(400).json({ error: 'You need to be a premium user to change your nickname' });
   }
   try {
     account.nickname = nickname;
     await account.save();
-    return res.json({ redirect: '/profile' + `/${req.session.account.username}` });
+    return res.json({ redirect: `/profile/${req.session.account.username}` });
   } catch (e) {
     return res.status(400).json({ error: 'Error updating nickname' });
   }
@@ -145,17 +141,17 @@ const updateStatus = async (req, res) => {
     console.log('Account:', account);
     account.isPremium = status;
     await account.save();
-    return res.json({ redirect: '/profile' + `/${req.session.account.username}` });
+    return res.json({ redirect: `/profile/${req.session.account.username}` });
   } catch (e) {
     return res.status(400).json({ error: 'Error updating status' });
   }
-}
+};
 
 const changePassword = async (req, res) => {
   const oldPass = req.body.oldPassword;
   const newPass = req.body.newPassword;
 
-  if (!oldPass || !newPass){
+  if (!oldPass || !newPass) {
     return res.status(400).json({ error: 'All fields are required!' });
   }
   try {
@@ -168,12 +164,12 @@ const changePassword = async (req, res) => {
     account.password = hash;
     await account.save();
     req.session.account = Account.toAPI(account);
-    return res.json({ redirect: '/profile' + `/${req.session.account.username}` });
+    return res.json({ redirect: `/profile/${req.session.account.username}` });
   } catch (e) {
     console.log(e);
     return res.status(400).json({ error: 'Error updating password' });
   }
-}
+};
 module.exports = {
   loginPage,
   accountInfo,

@@ -49,14 +49,14 @@ const QuestionDetail = (props) => {
 
 const Answer = (props) => {
     const {answer, answerer} = props.details;
-    console.log("answerer", answerer);
+    console.log("answer", answer);
     return (
         <div className="box has-text-centered is-rounded has-background-primary" style={{ width: 60 + '%' }}>
             <div className='box has-background-white has-text-centered is-rounded has-background-white'>
-                <p className="is-size-4 has-text-gray mt-1 mb-3 p-6">{answer ? answer.body : "No Answer Yet"}</p>
+                <p className="is-size-5 has-text-gray mt-1 mb-3 p-6">{answer && answer.body ? answer.body : "No Answer Yet"}</p>
             </div>
             <div>
-                <h3 className="has-text-weight-semibold is-size-4 mt-3 mb-3">{answer ? `Answered by ${answerer.nickname}` : null} </h3>
+                <h3 className="has-text-weight-semibold is-size-4 mt-3 mb-3">{answerer?.nickname ? `Answered by ${answerer.nickname}` : null} </h3>
             </div>
         </div>
     )
@@ -121,7 +121,7 @@ const App = (props) => {
             <div className="questionDetail is-flex is-justify-content-center is-align-items-center is-flex-direction-column" style={{ height: 80 + 'vh', width: 90 + 'vw' }}>
                 <QuestionDetail details = {details}/>
                 {(!details.question.isAnswered && details.question.owner === details.sessionUser._id) ? <AnswerForm triggerReload={() => setReloadQuestions(!reloadQuestions)} details={details} /> : null}
-                {details.question.isAnswered ? <Answer details = {details} /> : null}
+                {(details.question.isAnswered || details.question.owner !== details.sessionUser._id) ? <Answer details = {details} /> : null}
             </div>
     )
 }
