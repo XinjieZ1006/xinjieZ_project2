@@ -3,6 +3,20 @@ const handleError = (message) => {
   document.querySelector('#errorMessage').innerHTML = message;
 };
 
+const handleSearch = (e) => {
+  const searchButton = document.querySelector('#searchButton');
+
+  searchButton.onclick = () => {
+    const searchTerm = document.querySelector('#searchInput').value.trim();
+    if (searchTerm) {
+      window.location = `/profile/${searchTerm}`;
+    } else {
+      handleError('Please enter a username to search!');
+    }
+  }
+
+};
+
 /* Sends post requests to the server using fetch. Will look for various
    entries in the response JSON object, and will handle them appropriately.
 */
@@ -45,4 +59,5 @@ module.exports = {
   handleError,
   sendPost,
   hideError,
+  handleSearch,
 }

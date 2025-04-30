@@ -24,8 +24,6 @@ const getAnsweredQuestions = async (req, res) => {
         if (!account) {
             return res.status(404).render('notFound', { error: 'User not found!' });
         }
-        //const query = { owner: req.session.account._id };
-        //const docs = await Question.find(query).select('title body createdDate answer').lean().exec();
         const answeredQuestions = account.questions;
         return res.json({ answeredQuestions: answeredQuestions });
     } catch (err) {
@@ -50,7 +48,6 @@ const askQuestion = async (req, res) => {
             owner: owner._id,
             createdDate: req.body.createdDate,
             isAnswered: req.body.isAnswered,
-            answer: [],
         }
 
         const newQuestion = new Question(questionData);

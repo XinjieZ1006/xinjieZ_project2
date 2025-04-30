@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title>{{username}}'s Profile</title>
     <link rel="stylesheet" href="../assets/my-bulma-project.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -17,10 +17,10 @@
           <div class="navbar-center is-flex-grow-1 is-align-self-center">
     <div class="field has-addons">
       <div class="control">
-        <input class="input" type="text" placeholder="Search..." id="searchInput">
+        <input id="searchInput" class="input" type="text" placeholder="Search...">
       </div>
       <div class="control">
-        <button class="button is-white is-outlined" id="searchButton"> 
+        <button id="searchButton" class="button is-white is-outlined"> 
           <span class="icon is-small">
             <i class="fas fa-search"></i>
           </span>
@@ -29,12 +29,9 @@
     </div>
   </div>
     </nav>
-    <div id="app" class="" style="height: 80vh;">
-        <h1 class="title is-2 has-text-centered">Welcome to your profile, {{username}}!</h1>
-        <div id="profileContent" class="content"></div>
-    </div>
-    <script src="/assets/profileBundle.js"></script>
 
+    <div id="app" class="" style="height: 80vh;">
+    </div>
     <div class="modal" id="error">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -50,6 +47,7 @@
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
+    <script src="/assets/questionBundle.js"></script>
 </body>
 
 </html>

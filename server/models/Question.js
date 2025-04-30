@@ -4,6 +4,8 @@ const _ = require('underscore');
 
 const setName = (name) => _.escape(name).trim();
 
+let QuestionModel = {};
+
 const QuestionSchema = new mongoose.Schema({
     // user receiving the question
     owner: {
@@ -35,26 +37,13 @@ const QuestionSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    answer: [
-        {
-            body: {
-                type: String,
-                required: true,
-                trim: true,
-            },
-            owner: {
-                type: mongoose.Schema.ObjectId,
-                required: true,
-                ref: 'Account',
-            },
-            createdDate: {
-                type: Date,
-                default: Date.now,
-            },
-        },
-    ],
+    answer:
+    {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Answer',
+    },
 });
 
-const Question = mongoose.model('Question', QuestionSchema);
+QuestionModel = mongoose.model('Question', QuestionSchema);
 
-module.exports = Question;
+module.exports = QuestionModel;

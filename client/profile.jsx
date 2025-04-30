@@ -3,12 +3,15 @@ const React = require('react');
 const { useState, useEffect } = React;
 const { createRoot } = require('react-dom/client');
 const { useFormik } = require('formik');
+const reactDom = require('react-dom/client');
+const { Navbar } = require('./helper.jsx');
 
 
 const useCheckProfile = (props) => {
     const [user, setUser] = useState({});
     const [isOwnProfile, setIsOwnProfile] = useState(false);
     const [questions, setQuestions] = useState([]);
+    const [sessionUser, setSessionUser] = useState({});
 
     useEffect(() => {
         const getUser = async () => {
@@ -32,6 +35,7 @@ const useCheckProfile = (props) => {
                 }
                 setUser(data.account);
                 setQuestions(questionsData.answeredQuestions);
+                setSessionUser(sessionData.account);
             } catch (err) {
                 console.error('Error fetching user', err);
             }
@@ -40,7 +44,7 @@ const useCheckProfile = (props) => {
         getUser();
     }, [props.reloadQuestions]);
 
-    return { user, isOwnProfile, questions };
+    return { user, isOwnProfile, questions, sessionUser };
 }
 
 const UserProfile = (props) => {
@@ -59,13 +63,16 @@ const UserProfile = (props) => {
                 <hr />
                 {isOwnProfile ? <h3 className="is-size-5">Your Profile</h3> : <h3 className="is-size-5">User Profile</h3>}
                 <p>Member Since {new Date(user.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
+                {/* {isOwnProfile ? <div className='mt-4'><a className="button is-outlined has-text-weight-semibold">Unanswered Questions</a></div> : null} */}
+                {isOwnProfile ? <div className='mt-4'><a href='/editProfile' className="button is-outlined has-text-weight-semibold">Edit Profile</a></div> : null}
             </div>
         </div>
     );
 }
 
+
 const QuestionList = (props) => {
-    const {user, questions} = useCheckProfile(props);
+    const { user, questions } = useCheckProfile(props);
 
     console.log('Questions:', questions);
     if (questions.length === 0) {
@@ -78,15 +85,19 @@ const QuestionList = (props) => {
 
     const questionNodes = questions.map(question => {
         return (
-            <div key={question.id} className="question box has-text-centered is-rounded has-background-primary">
-                <h3 className="questionTitle">{question.title}</h3>
-                <p className="questionBody">{question.body}</p>
+            <div key={question.id} className="question box is-flex is-flex-direction-column is-justify-content-center is-align-content-center has-text-centered is-rounded has-background-primary" style={{ height: 300 + 'px', width: 900 + 'px' }}>
+                <h3 className="questionTitle mb-3 has-text-weight-bold is-size-3">{question.title}</h3>
+                {question.isAnswered ? <span className="tag is-success is-size-6">Answered</span> : <span className="tag is-grey-dark is-size-6">Unanswered</span>}
+                <div className="questionBody box is-shadowless has-text-centered is-rounded has-background-white p-9" style={{ height: 60 + '%' }}>
+                    <p className='is-flex is-justify-content-center is-align-content-center has-text-centered p-5'>{question.body.length > 100 ? question.body.slice(0, 100) + '...' : question.body}</p>
+                </div>
+                <div><a className='button has-text-weight-bold is-outlined' href={'/viewQuestion/' + question._id} >View Question</a></div>
             </div>
         );
     });
 
     return (
-        <div className="questionList">
+        <div className=" questionList is-flex is-flex-direction-column-reverse is-justify-content-space-evenly is-align-content-center">
             {questionNodes}
         </div>
     );
@@ -118,16 +129,16 @@ const QuestionForm = (props) => {
 
     return (
         <div className="box has-shadow has-text-centered is-rounded has-background-primary">
-        <form onSubmit={formik.handleSubmit}>
-            <div className='field'>
-            <label htmlFor='questionBody' className='title is-size-3 mb-2'>Ask Your Questions! </label>
-            <input id='questionBody' className='textarea has-text-centered' type='text' name='questionBody' placeholder='Question Body' onChange={formik.handleChange} value={formik.values.questionBody} />
-            {formik.errors.questionBody ? <div>{formik.errors.questionBody}</div> : null}
-            </div>
-            <div className='field'>
-            <input className='formSubmit button is-outlined has-text-weight-semibold' type='submit' value='Submit!' />
-            </div>
-        </form>
+            <form onSubmit={formik.handleSubmit}>
+                <div className='field'>
+                    <label htmlFor='questionBody' className='title is-size-3 mb-2'>Ask Your Questions! </label>
+                    <input id='questionBody' className='textarea has-text-centered' type='text' name='questionBody' placeholder='Question Body' onChange={formik.handleChange} value={formik.values.questionBody} />
+                    {formik.errors.questionBody ? <div>{formik.errors.questionBody}</div> : null}
+                </div>
+                <div className='field'>
+                    <input className='formSubmit button is-outlined has-text-weight-semibold' type='submit' value='Submit!' />
+                </div>
+            </form>
         </div>
 
     )
@@ -142,27 +153,32 @@ const validateQuestion = (values) => {
     return errors;
 }
 
-const App = () => {
+const App = (props) => {
     const [reloadQuestions, setReloadQuestions] = useState(false);
-
+    const { user, isOwnProfile } = useCheckProfile(props);
     return (
-        <div className="appContainer columns is-fullheight m-1">
-            <div className="column is-one-third">
-                <UserProfile />
-            </div>
-            <div className="column is-one-thirds mr-6">
-                <QuestionForm triggerReload ={() => setReloadQuestions(!reloadQuestions)} />
-            </div>
-            <div className="column is-one-thirds mr-6">
-                <QuestionList reloadQuestions = {reloadQuestions}/>
-            </div>
-        </div>
+        <div>
+            <div className="appContainer columns is-fullheight m-1" style={{ height: 100 + '%' }}>
+                <div className="column is-one-third">
+                    <UserProfile />
+                </div>
+                <div className="column is-two-thirds mr-6 is-flex is-justify-content-center is-align-items-center is-flex-direction-column">
+                    {!isOwnProfile ? <div className="mb-5" style={{ width: 90 + '%' }}>
+                        <QuestionForm triggerReload={() => setReloadQuestions(!reloadQuestions)} />
+                    </div> : null}
+
+                    <div className="mr-6" style={{ overflowX: 'hidden', wordWrap: 'break-word' }}>
+                        <QuestionList reloadQuestions={reloadQuestions} />
+                    </div>
+                </div>
+            </div></div>
     );
 }
 
 const init = () => {
     const root = createRoot(document.getElementById('app'));
     root.render(<App />);
+    helper.handleSearch();
 }
 
 window.onload = init;

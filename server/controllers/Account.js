@@ -1,6 +1,7 @@
 const models = require('../models');
 
 const { Account } = models;
+const bcrypt = require('bcrypt');
 
 const loginPage = (req, res) => res.render('login');
 const accountInfo = (req, res) => res.render('account');
@@ -72,7 +73,7 @@ const getName = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const username = req.params.username;
-    const account = await Account.findOne({ username });
+    const account = await Account.findOne({ username }).select('-password');
 
     if (!account) {
       return res.status(404).json({ error: 'User not found' });
@@ -91,7 +92,7 @@ const getSessionUser = async (req, res) => {
   }
 
   try {
-    const account = await Account.findById(req.session.account._id);
+    const account = await Account.findById(req.session.account._id).select('-password');
     return res.json({account: account});
   }
   catch (e) {
@@ -106,7 +107,7 @@ const getCurrentUser = async (req, res) => {
   }
 
   try {
-    const account = await Account.findById(req.session.account._id);
+    const account = await Account.findById(req.session.account._id).select('-password');
     console.log('Account:', account);
     return res.json({
       nickname: account.nickname,
@@ -118,21 +119,61 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+
 const updateNickname = async (req, res) => {
   const nickname = req.body.newName;
+  const account = await Account.findById(req.session.account._id);
   if (!nickname) {
     return res.status(400).json({ error: 'Enter a new nickname' });
   }
+  if(!account.isPremium){
+    return res.status(400).json({ error: 'You need to be a premium user to change your nickname' });
+  }
   try {
-    const account = await Account.findById(req.session.account._id);
     account.nickname = nickname;
     await account.save();
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/profile' + `/${req.session.account.username}` });
   } catch (e) {
     return res.status(400).json({ error: 'Error updating nickname' });
   }
 };
 
+const updateStatus = async (req, res) => {
+  const status = true;
+  try {
+    const account = await Account.findById(req.session.account._id);
+    console.log('Account:', account);
+    account.isPremium = status;
+    await account.save();
+    return res.json({ redirect: '/profile' + `/${req.session.account.username}` });
+  } catch (e) {
+    return res.status(400).json({ error: 'Error updating status' });
+  }
+}
+
+const changePassword = async (req, res) => {
+  const oldPass = req.body.oldPassword;
+  const newPass = req.body.newPassword;
+
+  if (!oldPass || !newPass){
+    return res.status(400).json({ error: 'All fields are required!' });
+  }
+  try {
+    const account = await Account.findById(req.session.account._id);
+    const isMatch = await bcrypt.compare(oldPass, account.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Wrong password!' });
+    }
+    const hash = await Account.generateHash(newPass);
+    account.password = hash;
+    await account.save();
+    req.session.account = Account.toAPI(account);
+    return res.json({ redirect: '/profile' + `/${req.session.account.username}` });
+  } catch (e) {
+    console.log(e);
+    return res.status(400).json({ error: 'Error updating password' });
+  }
+}
 module.exports = {
   loginPage,
   accountInfo,
@@ -144,4 +185,6 @@ module.exports = {
   getCurrentUser,
   getSessionUser,
   getUser,
+  updateStatus,
+  changePassword,
 };

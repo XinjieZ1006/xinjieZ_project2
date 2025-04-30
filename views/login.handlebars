@@ -4,21 +4,30 @@
   <meta charset="utf-8" />
   <title>DomoMaker</title>
   <link rel="shortcut icon" href="/assets/img/favicon.png" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <link rel="stylesheet" href="../assets/my-bulma-project.css">
 </head>
 
 <body>
-  <nav class="navbar has-background-primary"><a href="/login"></a>
-    <div class="navlink navbar-item"><a id="loginButton" href="/login">Login</a></div>
-    <div class="navlink navbar-item"><a id="signupButton" href="/signup">Sign up</a></div>
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-        </div>
-  </nav>
+<nav class="navbar has-background-primary is-align-items-center is-flex is-justify-content-space-between	">
+  <div class="navbar-start">
+    <div class="navlink navbar-item">
+      <a class="button is-outlined has-text-weight-bold" id="loginButton" href="/login">Login</a>
+    </div>
+    <div class="navlink navbar-item">
+      <a class="button is-outlined has-text-weight-bold" id="signupButton" href="/signup">Sign up</a>
+    </div>
+  </div>
 
-  <section id="content">
+  <div class="navbar-end"></div>
+</nav>
 
+  <section id="title" class="hero is-primary is-medium is-bold" style="height: 50vh;">
+    <div class="hero-body">
+    <h1 class="title is-1 has-text-centered has-text-info">Welcome to AskBox!</h1>
+    <h2 class="subtitle is-3 has-text-centered has-text-info">Ask anything. Answer thoughtfully. Connect through curiosity.</h2>
+    </div> 
+      <div id="content">
+  </div>
   </section>
 
 <div class="modal" id="error">

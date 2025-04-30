@@ -3,6 +3,7 @@ const React = require('react');
 const { createRoot } = require('react-dom/client');
 const { useFormik } = require('formik');
 const { values } = require('underscore');
+const { Navbar } = require('./helper.jsx');
 
 const handleLogin = (e) => {
     e.preventDefault();
@@ -96,6 +97,10 @@ const LoginForm = (props) => {
     });
 
     return (
+        <div>
+
+        <div className='is-flex is-justify-content-center is-align-items-center'>
+        <div className='box has-shadow has-text-centered is-rounded has-background-primary'>
         <form onSubmit={formik.handleSubmit}>
             <div className='field'>
             <label htmlFor='username' className='label'>Username: </label>
@@ -110,9 +115,12 @@ const LoginForm = (props) => {
             </div>
 
             <div className='field'>
-            <button className='formSubmit button is-primary' type='submit'>Submit</button>
+            <button className='formSubmit button is-outlined has-text-weight-bold mt-2' type='submit'>Login</button>
             </div>
         </form>
+        </div>
+        </div>
+        </div>
     )
 }
 
@@ -131,6 +139,8 @@ const SignUpForm = (props) => {
     });
 
     return (
+        <div className='is-flex is-justify-content-center is-align-items-center'>
+        <div className='box has-shadow has-text-centered is-rounded has-background-primary'>
         <form onSubmit={formik.handleSubmit}>
             <div className='field'>
             <label htmlFor='username' className='label'>Username: </label>
@@ -156,9 +166,11 @@ const SignUpForm = (props) => {
             </div>
 
             <div className='field'>
-            <button className='formSubmit button is-primary' type='submit' >Submit</button>
+            <button className='formSubmit button is-outlined has-text-weight-bold ' type='submit' >Sign Up</button>
             </div>
         </form>
+        </div>
+        </div>
     )
 }
 
@@ -180,6 +192,7 @@ const init = () => {
     })
 
     root.render(<LoginForm />);
+    helper.handleSearch();
 }
 
 window.onload = init;

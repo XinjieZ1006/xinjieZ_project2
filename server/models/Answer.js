@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const _ = require('underscore');
 
+let AnswerModel = {};
 const AnswerSchema = new mongoose.Schema({
     question: {
       type: mongoose.Schema.ObjectId,
@@ -24,6 +25,6 @@ const AnswerSchema = new mongoose.Schema({
     },
   });
   
-  const Answer = mongoose.model('Answer', AnswerSchema);
-  module.exports = Answer;
+  AnswerModel = mongoose.model('Answer', AnswerSchema);
+  module.exports = AnswerModel;
   

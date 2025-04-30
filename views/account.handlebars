@@ -1,25 +1,37 @@
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
+  <meta charset="utf-8" />
   <title>Account Info</title>
-  <link rel="shortcut icon" href="/assets/img/favicon.png"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <link rel="shortcut icon" href="/assets/img/favicon.png" />
+  <link rel="stylesheet" href="../assets/my-bulma-project.css">
 </head>
-<body> 
-  <nav><a href="/login"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
-    <div class="navlink"><a href="/maker">Back</a></div>
-    <div class="navlink"><a href="/logout">Log out</a></div>
+
+<body>
+  <nav class="navbar has-background-primary mb-5 p-2 is-rounded">
+    <div class="navlink navbar-item"><a class="button is-outlined has-text-weight-bold" href="/logout">Logout</a></div>
+    <div class="navlink navbar-item"><a class="button is-outlined has-text-weight-bold" href="/">Home</a></div>
   </nav>
-  
   <section id="info">
 
   </section>
 
-  <div id="domoMessage" class='hidden'>
-    <img id="speech" src="/assets/img/speech.png" alt="speech box"/>
-    <h3><span id="errorMessage"></span></h3>
-    <img id="domo" src="assets/img/domo.png" alt="domo"/>
+  <div class="modal" id="error">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Error</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <h3><span id="errorMessage"></span></h3>
+        </section>
+      </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
   </div>
   <script src="/assets/accountBundle.js"></script>
 </body>
+
 </html>
