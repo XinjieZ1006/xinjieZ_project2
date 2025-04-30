@@ -6,10 +6,10 @@ const profilePage = async (req, res) => {
   const { username } = req.params;
   // check if the user exists
   const account = await models.Account.findOne({ username }).lean();
-  const profilePicture = account.avatar || '../assets/img/lemon.png';
   if (!account) {
     return res.status(404).render('notFound', { error: 'User not found!' });
   }
+  const profilePicture = account.avatar || '../assets/img/lemon.png';
   return res.render('profile', { username, profilePicture });
 };
 
