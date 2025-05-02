@@ -48,6 +48,14 @@ const signup = async (req, res) => {
   try {
     const hash = await Account.generateHash(pass);
     const newAcc = new Account({ username, nickname, password: hash });
+    const defaultQuestion = new models.Question({
+      owner: newAcc._id,
+      asker: newAcc._id,
+      title: 'Welcome to AskBox!',
+      body: 'This is your first question. Feel free to ask anything!',
+    });
+    await defaultQuestion.save();
+    newAcc.questions.push(defaultQuestion._id);
     await newAcc.save();
     req.session.account = Account.toAPI(newAcc);
     return res.json({ redirect: `/profile/${username}` });
