@@ -52,7 +52,7 @@ const signup = async (req, res) => {
       owner: newAcc._id,
       asker: newAcc._id,
       title: 'Welcome to AskBox!',
-      body: 'This is your first question. Feel free to ask anything!',
+      body: 'This is your first question. Feel free to ask anything! You can search for other users using the search bar. (Some usernames for testing: 1, 2, 3)',
     });
     await defaultQuestion.save();
     newAcc.questions.push(defaultQuestion._id);
